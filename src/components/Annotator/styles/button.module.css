@@ -1,0 +1,40 @@
+.highlight-color-button {
+    border: none;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    z-index: 1000;
+    margin: 0 2px;
+    border-radius: 4px;
+    padding: 0;
+}
+
+.strikethrough-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    height: 20px;
+    z-index: 1000;
+    color: white;
+    font-size: 14px;
+    width: fit-content;
+    text-decoration: line-through;
+    padding: 0;
+}
+
+.underline-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    color: white;
+    font-size: 14px;
+    padding: 0;
+}
+
+.underline_icon-button {
+    height: 2px;
+    width: 20px;
+    background-color: red;
+    margin-top: 10px;
+}

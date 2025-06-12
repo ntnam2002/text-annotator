@@ -1,0 +1,21 @@
+.highlight-dialog-menu {
+    position: absolute;
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    z-index: 1000;
+    width: fit-content;
+    padding: 7px;
+    border-radius: 6px;
+    background-color: #4d4d4d;
+}
+
+.highlight-dialog-menu-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+}

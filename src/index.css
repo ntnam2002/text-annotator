@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.highlight-note {
+    background-color: #fff;
+    color: red;
+    font-size: 14px;
+    margin-left: 6px;
+    padding: 4px 8px;
+    border: 1px dashed #ccc;
+    cursor: default;
+    user-select: none;
+    border-radius: 4px;
+    height: 100%;
+    min-height: 100%;
+    text-decoration: none !important;
+}
+
+.highlighted-text {
+    position: relative;
+    cursor: pointer;
+    display: inline;
+}
+
+.highlighted-text[style*="border-bottom"] {
+    line-height: 1.2;
+}
+
+.delete-icon {
+    margin-left: 4px;
+    cursor: pointer;
+}
