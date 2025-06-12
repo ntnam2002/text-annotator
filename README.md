@@ -22,7 +22,7 @@ A powerful React component library that enables users to highlight text, add not
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/ntnam2002/text-annotator.git
 cd Annotator
 
 # Install dependencies
