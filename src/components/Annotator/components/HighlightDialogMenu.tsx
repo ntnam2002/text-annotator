@@ -1,4 +1,4 @@
-import { PenLine } from "lucide-react";
+import { Pencil } from "lucide-react";
 import NoteForm from "./NoteForm";
 import ColorButton from "./ColorButton";
 import UnderlineButton from "./UnderlineButton";
@@ -7,6 +7,7 @@ import DeleteButton from "./DeleteButton";
 import { colors } from "../constant";
 import { AnnotatorMenuProps } from "../types/annotator.interface";
 import styles from "../styles/highlight.module.css";
+import buttonStyles from "../styles/button.module.css";
 
 /**
  * @description Component that displays dialog menu for highlight operations
@@ -55,32 +56,29 @@ const HighlightDialogMenu = ({
             className={styles["highlight-dialog-menu"]}
         >
             <div className={styles["highlight-dialog-menu-buttons"]}>
-                {/* Delete highlight button */}
-                {showDelete && (
-                    <DeleteButton
-                        lastUid={lastUid}
-                        setDialogVisible={setDialogVisible}
-                    />
-                )}
+                {/* Highlight color selection buttons */}
+                <div className={buttonStyles["highlight-color-buttons"]}>
+                    {showColor &&
+                        colors.map((color) => (
+                            <ColorButton
+                                key={color.name}
+                                color={color}
+                                lastUid={lastUid}
+                                selectedColorRef={selectedColorRef}
+                                setDialogVisible={setDialogVisible}
+                            />
+                        ))}
+                </div>
+
                 {/* Note button */}
                 {showNote && (
-                    <PenLine
-                        size={18}
+                    <Pencil
+                        size={14}
+                        className={buttonStyles["note-button"]}
                         onClick={() => setNoteVisible(!noteVisible)}
-                        style={{ color: "white" }}
                     />
                 )}
-                {/* Highlight color selection buttons */}
-                {showColor &&
-                    colors.map((color) => (
-                        <ColorButton
-                            key={color.name}
-                            color={color}
-                            lastUid={lastUid}
-                            selectedColorRef={selectedColorRef}
-                            setDialogVisible={setDialogVisible}
-                        />
-                    ))}
+
                 {/* Underline and strikethrough buttons */}
                 {showUnderline && (
                     <UnderlineButton
@@ -90,6 +88,13 @@ const HighlightDialogMenu = ({
                 )}
                 {showStrikethrough && (
                     <StrikethroughButton
+                        lastUid={lastUid}
+                        setDialogVisible={setDialogVisible}
+                    />
+                )}
+                {/* Delete highlight button */}
+                {showDelete && (
+                    <DeleteButton
                         lastUid={lastUid}
                         setDialogVisible={setDialogVisible}
                     />

@@ -1,5 +1,6 @@
 import { StrikethroughButtonProps } from "../types/button.interface";
 import styles from "../styles/button.module.css";
+import { Strikethrough } from "lucide-react";
 
 /**
  * @description Strikethrough button to apply to highlighted text
@@ -14,7 +15,7 @@ const StrikethroughButton = ({
 }: StrikethroughButtonProps) => (
     <button
         type="button"
-        className={styles["strikethrough-button"]}
+        className={styles["strikethrough-icon"]}
         onClick={(e) => {
             e.stopPropagation();
             if (lastUid) {
@@ -32,7 +33,7 @@ const StrikethroughButton = ({
             setDialogVisible(false);
         }}
     >
-        abc
+        <Strikethrough />
     </button>
 );
 export default StrikethroughButton;

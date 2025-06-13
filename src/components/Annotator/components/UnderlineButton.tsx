@@ -1,5 +1,6 @@
 import { UnderlineButtonProps } from "../types/button.interface";
 import styles from "../styles/button.module.css";
+import { Underline } from "lucide-react";
 
 /**
  * @description Underline button to apply to highlighted text
@@ -31,7 +32,8 @@ const UnderlineButton = ({
             setDialogVisible(false);
         }}
     >
-        <div className={styles["underline_icon-button"]}></div>
+        {" "}
+        <Underline size={16} />
     </button>
 );
 export default UnderlineButton;

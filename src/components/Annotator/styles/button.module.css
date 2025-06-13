@@ -1,40 +1,129 @@
 .highlight-color-button {
-    border: none;
+    border: 1px solid #e5e7eb;
     cursor: pointer;
-    width: 18px;
-    height: 18px;
-    z-index: 1000;
-    margin: 0 2px;
-    border-radius: 4px;
-    padding: 0;
-}
-
-.strikethrough-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
+    width: 20px;
     height: 20px;
     z-index: 1000;
-    color: white;
-    font-size: 14px;
-    width: fit-content;
-    text-decoration: line-through;
+    margin: 0;
+    border-radius: 3px;
     padding: 0;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.highlight-color-button:hover {
+    transform: scale(1.1);
+    border-color: #9ca3af;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.strikethrough-icon {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+    padding: 4px;
+    z-index: 1000;
+    color: #374151;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.strikethrough-icon:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .underline-button {
-    background-color: transparent;
-    border: none;
+    background: transparent;
+    border: 1px solid transparent;
     cursor: pointer;
+    height: 24px;
+    width: 24px;
     z-index: 1000;
-    color: white;
+    color: #374151;
     font-size: 14px;
     padding: 0;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.underline_icon-button {
-    height: 2px;
-    width: 20px;
-    background-color: red;
-    margin-top: 10px;
+.underline-button:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+.underline-icon {
+    color: #374151;
+    font-size: 14px;
+    line-height: 1;
+    height: 16px;
+    width: 16px;
+}
+
+.delete-button {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    z-index: 1000;
+    color: #dc2626;
+    padding: 2px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-button:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
+.note-button {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    z-index: 1000;
+    color: #374151;
+    padding: 2px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.note-button:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+.highlight-color-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 4px 8px 4px 0px;
+    border-right: #e5e7eb 1px solid;
 }

@@ -91,14 +91,7 @@ const NoteForm = ({
                                 )
                             }
                         />
-                        <label
-                            htmlFor="correctAnswer"
-                            style={{
-                                color: "white",
-                            }}
-                        >
-                            Đúng
-                        </label>
+                        <label htmlFor="correctAnswer">Đúng</label>
                     </div>
 
                     <div className={styles["answer-check-options"]}>
@@ -114,14 +107,7 @@ const NoteForm = ({
                                 )
                             }
                         />
-                        <label
-                            htmlFor="wrongAnswer"
-                            style={{
-                                color: "white",
-                            }}
-                        >
-                            Sai
-                        </label>
+                        <label htmlFor="wrongAnswer">Sai</label>
                     </div>
                 </div>
             )}
@@ -134,7 +120,7 @@ const NoteForm = ({
                 />
             )}
             <button type="submit" className={styles["note-submit-button"]}>
-                <Check size={25} />
+                <Check size={18} />
             </button>
         </form>
     );
