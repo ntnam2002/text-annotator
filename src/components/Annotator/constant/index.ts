@@ -5,7 +5,7 @@ export const colors = [
     { name: "Yellow", code: "#ffff00" },
 ];
 export const DIALOG_OFFSET_Y = 40;
-export const DIALOG_OFFSET_Y_CLICK = 50;
+export const DIALOG_OFFSET_Y_CLICK = 40;
 
 export const BACKGROUND_COLORS = {
     CORRECT: "rgb(139, 233, 120)",

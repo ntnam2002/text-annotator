@@ -1,5 +1,6 @@
-import { Trash } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { DeleteButtonProps } from "../types/button.interface";
+import styles from "../styles/button.module.css";
 
 /**
  * @description Delete button to remove highlighted text and related notes
@@ -11,8 +12,9 @@ import { DeleteButtonProps } from "../types/button.interface";
 const DeleteButton = ({ lastUid, setDialogVisible }: DeleteButtonProps) => {
     return (
         lastUid && (
-            <Trash
-                size={18}
+            <Trash2
+                size={14}
+                className={styles["delete-button"]}
                 onClick={(e) => {
                     e.stopPropagation();
                     if (lastUid) {
@@ -35,7 +37,7 @@ const DeleteButton = ({ lastUid, setDialogVisible }: DeleteButtonProps) => {
                     }
                     setDialogVisible(false);
                 }}
-                style={{ color: "white" }}
+                style={{ color: "red" }}
             />
         )
     );
