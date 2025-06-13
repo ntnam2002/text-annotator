@@ -315,7 +315,7 @@ export function useHighlightDialog(
                     if (correctAnswerInput) {
                         const correctedUid = genUid();
                         const correctedBox = createNoteBox(
-                            `Đáp án đúng: ${correctAnswerInput}`,
+                            `Correct answer: ${correctAnswerInput}`,
                             () => {
                                 const correctedElement = document.querySelector(
                                     `[corrected-answer-uid='${correctedUid}']`,

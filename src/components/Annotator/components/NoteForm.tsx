@@ -70,7 +70,7 @@ const NoteForm = ({
         >
             <textarea
                 name="note"
-                placeholder="Thêm ghi chú..."
+                placeholder="Add note..."
                 className={styles["note-textarea"]}
                 autoFocus
             />
@@ -91,7 +91,7 @@ const NoteForm = ({
                                 )
                             }
                         />
-                        <label htmlFor="correctAnswer">Đúng</label>
+                        <label htmlFor="correctAnswer">Correct</label>
                     </div>
 
                     <div className={styles["answer-check-options"]}>
@@ -107,7 +107,7 @@ const NoteForm = ({
                                 )
                             }
                         />
-                        <label htmlFor="wrongAnswer">Sai</label>
+                        <label htmlFor="wrongAnswer">Wrong</label>
                     </div>
                 </div>
             )}
@@ -115,7 +115,7 @@ const NoteForm = ({
             {selectedAnswer === "wrong" && (
                 <textarea
                     name="correctedAnswer"
-                    placeholder="Câu trả lời đúng..."
+                    placeholder="Corrected answer..."
                     className={styles["note-textarea"]}
                 />
             )}
