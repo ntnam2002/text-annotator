@@ -1,9 +1,9 @@
 import "./App.css";
-import HighlightDialog from "./components/Annotator";
+import Annotator from "./Annotator";
 import {
     exportHighlightsData,
     importHighlightsData,
-} from "./components/Annotator/utils/ImportExportUtils";
+} from "./Annotator/utils/ImportExportUtils";
 
 function App() {
     const handleExportHighlights = () => {
@@ -16,14 +16,19 @@ function App() {
             const importedData = JSON.parse(
                 localStorage.getItem("highlightsData") || "{}",
             );
-            importHighlightsData(importedData);
+            importHighlightsData(importedData, false);
         } else {
-            alert("Chưa có dữ liệu để import. Hãy export trước!");
+            alert("No data to import. Please export first!");
         }
     };
 
     return (
-        <HighlightDialog enableHighlight={true}>
+        <Annotator
+            enableHighlight={true}
+            enableAnswerCheck={false}
+            enableTranslate={true}
+            enableFlashCard={true}
+        >
             <div>
                 <button
                     onClick={handleExportHighlights}
@@ -265,7 +270,6 @@ function App() {
 
                         <div style={{ marginBottom: "30px" }}>
                             <h2 style={{ color: "#2c3e50" }}>Questions</h2>
-
                             <div
                                 style={{
                                     marginBottom: "20px",
@@ -383,7 +387,6 @@ function App() {
                                     <strong>5</strong> Paragraph F
                                 </p>
                             </div>
-
                             <div
                                 style={{
                                     marginBottom: "20px",
@@ -461,7 +464,6 @@ function App() {
                                     for older adults.
                                 </p>
                             </div>
-
                             <div
                                 style={{
                                     marginBottom: "20px",
@@ -558,7 +560,6 @@ function App() {
                                     </li>
                                 </ul>
                             </div>
-
                             <div
                                 style={{
                                     marginBottom: "20px",
@@ -625,12 +626,12 @@ function App() {
                                     use _________ to improve cycling routes and
                                     safety.
                                 </p>
-                            </div>
+                            </div>{" "}
                         </div>
                     </div>
                 </div>
             </div>
-        </HighlightDialog>
+        </Annotator>
     );
 }
 

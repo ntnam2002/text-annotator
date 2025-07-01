@@ -169,7 +169,6 @@ npm publish
 
 **Runtime Dependencies:**
 
--   `@dnd-kit/core`: Drag and drop functionality
 -   `@emotion/css`: CSS-in-JS styling
 -   `lucide-react`: Icon components
 -   `react`: Core React library (18.2.0+)

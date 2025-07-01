@@ -1,30 +1,37 @@
-import HighlightDialogMenu from "./components/HighlightDialogMenu";
+import "../index.css";
+import "../App.css";
+import HighlightDialogMenu from "./HighlightDialogMenu";
 import { useHighlightDialog } from "./hooks/useHighlightDialog";
 import { HighlightDialogProps } from "./types/annotator.interface";
 
 /**
  *
  * @param params
- * @param params.children - Child components to be displayed inside the dialog
- * @param params.showDelete - Whether to show delete highlight button
+ * @param params.children - Child components displayed inside dialog
+ * @param params.showDelete - Whether to show delete highlight area button
  * @param params.showNote - Whether to show note button
  * @param params.showColor - Whether to show color selection buttons
  * @param params.showUnderline - Whether to show underline button
  * @param params.showStrikethrough - Whether to show strikethrough button
  * @param params.enableAnswerCheck - Check if answer checking feature is enabled
  * @param params.enableHighlight - Whether to allow highlighting
- * @description Dialog that displays options for selected highlighted text
+ * @param params.enableTranslate - Whether to allow text translation
+ * @param params.deleteNoteButtonVisible - Whether to show delete note button
+ * @description Dialog displaying options for selected highlighted text
  * @returns
  */
-const HighlightDialog = ({
+const Annotator = ({
     children,
     showDelete = true,
     showNote = true,
     showColor = true,
     showUnderline = true,
     showStrikethrough = true,
-    enableAnswerCheck = true,
+    enableAnswerCheck = false,
     enableHighlight = true,
+    enableTranslate = false,
+    enableFlashCard = false,
+    deleteNoteButtonVisible = true,
 }: HighlightDialogProps) => {
     const {
         selectedColorRef,
@@ -39,8 +46,7 @@ const HighlightDialog = ({
         dialogRef,
         handleAddNote,
         noteUid,
-    } = useHighlightDialog(enableHighlight);
-
+    } = useHighlightDialog(enableHighlight, deleteNoteButtonVisible);
     return (
         <>
             {dialogVisible && (
@@ -62,10 +68,12 @@ const HighlightDialog = ({
                     showUnderline={showUnderline}
                     showStrikethrough={showStrikethrough}
                     enableAnswerCheck={enableAnswerCheck}
+                    enableTranslate={enableTranslate}
+                    enableFlashCard={enableFlashCard}
                 />
             )}
             <div id="highlighted-area">{children}</div>
         </>
     );
 };
-export default HighlightDialog;
+export default Annotator;

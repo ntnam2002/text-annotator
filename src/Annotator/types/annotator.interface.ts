@@ -26,21 +26,13 @@ export interface AnnotatorMenuProps {
     showUnderline?: boolean;
     showStrikethrough?: boolean;
     enableAnswerCheck?: boolean;
+    enableTranslate?: boolean;
+    enableFlashCard?: boolean;
 }
 
 export interface HighlightDialogPosition {
     top: number;
     left: number;
-}
-
-export interface HighlightNoteExportData {
-    uid: string;
-    xpath: string;
-    text: string;
-    color: string;
-    note?: string;
-    isCorrect?: boolean;
-    correctAnswer?: string;
 }
 
 export interface HighlightDialogProps {
@@ -52,4 +44,7 @@ export interface HighlightDialogProps {
     showStrikethrough?: boolean;
     enableAnswerCheck?: boolean;
     enableHighlight?: boolean;
+    enableTranslate?: boolean;
+    enableFlashCard?: boolean;
+    deleteNoteButtonVisible?: boolean;
 }

@@ -5,8 +5,8 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    background: #fffffff3;
-    z-index: 1000;
+    background: #ffffffe5;
+    z-index: 10;
     width: fit-content;
     padding: 4px 8px;
     border-radius: 8px;

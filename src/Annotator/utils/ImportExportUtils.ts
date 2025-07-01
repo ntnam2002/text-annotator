@@ -4,7 +4,10 @@ import {
     createNoteBox,
     onDelete,
 } from "../hooks/helpers/highlightHelpers";
-import { ImportExportData } from "../types/importExport.interface";
+import {
+    ImportExportData,
+    ExportHighlightResult,
+} from "../types/importExport.interface";
 import {
     genUid,
     getXpathFromElement,
@@ -30,11 +33,11 @@ declare global {
 }
 
 /**
- * Remove last segment from xpath to get parent element xpath
+ * Remove the last segment from xpath to get the parent element's xpath
  * Example: "/html/body/div[1]/p[2]/span" → "/html/body/div[1]/p[2]"
  * Example: "//DIV[@id='root']/DIV[1]/SPAN[1]" → "//DIV[@id='root']/DIV[1]"
- * @param path - Full xpath of element
- * @returns Parent element xpath (excluding last segment)
+ * @param path - Full xpath of the element
+ * @returns xpath of parent element (excluding the last segment)
  */
 function removeLastSegment(path: string): string {
     // Check if xpath starts with //
@@ -51,28 +54,32 @@ function removeLastSegment(path: string): string {
 }
 
 /**
- * Import and restore highlights from saved data into DOM
+ * Import and restore highlights from saved data into the DOM.
  *
  * Main functions:
- * 1. Remove all existing highlights on the page
- * 2. Iterate through each item in data and recreate highlights
- * 3. Restore notes and noteMarks associated with highlights
+ * 1. Remove all existing highlights on the page.
+ * 2. Iterate through each item in the data and recreate the highlights.
+ * 3. Restore notes and noteMarks related to the highlights.
  *
- * @param data - Array containing highlight information to import
- * @param data[].xpath - XPath to element containing highlight
- * @param data[].offsetStart - Start position of highlighted text
- * @param data[].offsetEnd - End position of highlighted text
- * @param data[].offsetCount - Number of words highlighted
- * @param data[].underline - Whether highlight has underline or not
- * @param data[].strikethrough - Whether highlight has strikethrough or not
- * @param data[].noteColor - Background color of highlight (default is first color in list)
- * @param data[].note - Array of regular text notes associated with highlight
- * @param data[].noteMark - Array of scoring/evaluation notes associated with highlight
- * @param data[].parentText - Full text of parent element (for validation, optional)
- * @param data[].highlightText - Exact text that was highlighted (required for positioning)
+ * @param {Array<{
+ *   xpath: string, // XPath of the element containing the highlighted text
+ *   offsetStart: number, // Start position of the highlighted text within the parent element
+ *   offsetEnd: number, // End position of the highlighted text within the parent element
+ *   offsetCount: number, // Number of words in the highlighted text
+ *   underline?: boolean, // Whether to underline the text
+ *   strikethrough?: boolean, // Whether to strikethrough the text
+ *   noteColor?: string, // Color of the note (if any)
+ *   note?: string[], // Array containing notes related to the highlighted text
+ *   noteMark?: string[], // Array containing noteMarks related to the highlighted text
+ *   parentText?: string, // Text of the parent element containing the highlighted text
+ *   highlightText: string // The highlighted text
+ * }>} data - Array containing highlight information to import
  */
-export function importHighlightsData(data: Array<ImportExportData>) {
-    // Clean DOM - Remove all old highlights before importing new data
+export function importHighlightsData(
+    data: ImportExportData[],
+    deleteNoteButtonVisible: boolean = true,
+): void {
+    // Clean up DOM - Remove all old highlights before importing new data
     document.querySelectorAll(".highlighted-text").forEach((span) => {
         const parent = span.parentNode;
         if (!parent) return;
@@ -126,12 +133,14 @@ export function importHighlightsData(data: Array<ImportExportData>) {
                 parent,
                 item.highlightText,
                 item,
+                genUid(),
+                deleteNoteButtonVisible,
             );
             if (!success) {
                 console.warn(
                     "Could not find and highlight text:",
                     item.highlightText,
-                    "trong element:",
+                    "in element:",
                     parent,
                 );
             }
@@ -143,15 +152,19 @@ export function importHighlightsData(data: Array<ImportExportData>) {
 
 /**
  * Find and highlight text spanning across multiple text nodes
- * @param parent - Parent element containing text to highlight
+ * @param parent - Parent element containing the text to highlight
  * @param targetText - Text to find and highlight
  * @param item - Highlight data from import
+ * @param highlightUid - UID of the created highlight
+ * @param deleteNoteButtonVisible - Whether to show delete note button
  * @returns boolean - Success or failure
  */
 function findAndHighlightTextAcrossNodes(
     parent: HTMLElement,
     targetText: string,
     item: ImportExportData,
+    highlightUid: string,
+    deleteNoteButtonVisible: boolean,
 ): boolean {
     const range = document.createRange();
     range.selectNodeContents(parent);
@@ -184,13 +197,11 @@ function findAndHighlightTextAcrossNodes(
         );
 
         if (found && selection.rangeCount > 0) {
-            const foundRange = selection.getRangeAt(0);
-
-            // Check if range is within parent
+            const foundRange = selection.getRangeAt(0); // Check if range is within parent element
             if (parent.contains(foundRange.commonAncestorContainer)) {
                 const span = createHighlightSpan(
-                    item.noteColor || colors[3].code,
-                    genUid(),
+                    item.highlightColor || colors[3].code,
+                    highlightUid,
                     item.underline || false,
                     item.strikethrough || false,
                 );
@@ -201,7 +212,13 @@ function findAndHighlightTextAcrossNodes(
                     span.appendChild(contents);
                     foundRange.insertNode(span);
 
-                    addNotesToSpan(span, item);
+                    addNotesToSpan(
+                        span,
+                        highlightUid,
+                        item,
+                        item.highlightColor || colors[3].code,
+                        deleteNoteButtonVisible,
+                    );
 
                     found = true;
                 } catch (error) {
@@ -230,18 +247,23 @@ function findAndHighlightTextAcrossNodes(
             }
         });
     }
-
-    // Fallback: if window.find doesn't work, use TreeWalker method
+    console.log("Found highlight:", found, "for text:", targetText);
+    // If window.find doesn't work, use TreeWalker method
     if (!found) {
-        found = findAndHighlightTextWithTreeWalker(parent, targetText, item);
+        found = findAndHighlightTextWithTreeWalker(
+            parent,
+            targetText,
+            item,
+            highlightUid,
+        );
     }
 
     return found;
 }
 
 /**
- * Fallback method using TreeWalker to find and highlight text
- * @param parent - Parent element containing text to highlight
+ * Alternative method using TreeWalker to find and highlight text
+ * @param parent - Parent element containing the text to highlight
  * @param targetText - Text to find and highlight
  * @param item - Highlight data from import
  * @returns boolean - Success or failure
@@ -250,6 +272,7 @@ function findAndHighlightTextWithTreeWalker(
     parent: HTMLElement,
     targetText: string,
     item: ImportExportData,
+    lastSelectedHighlightUid: string,
 ): boolean {
     const walker = document.createTreeWalker(
         parent,
@@ -291,17 +314,22 @@ function findAndHighlightTextWithTreeWalker(
     if (affectedNodes.length === 0) {
         return false;
     }
-
     const span = createHighlightSpan(
-        item.noteColor || colors[3].code,
-        genUid(),
+        item.highlightColor || colors[3].code,
+        lastSelectedHighlightUid,
         item.underline || false,
         item.strikethrough || false,
     );
     span.className = "highlighted-text";
     span.textContent = targetText;
 
-    addNotesToSpan(span, item);
+    addNotesToSpan(
+        span,
+        lastSelectedHighlightUid,
+        item,
+        item.highlightColor,
+        item.deleteNoteButtonVisible,
+    );
 
     if (affectedNodes.length === 1) {
         const nodePos = affectedNodes[0];
@@ -361,9 +389,52 @@ function findAndHighlightTextWithTreeWalker(
 /**
  * Add notes and noteMarks to highlight span
  * @param span - Highlight span element
+ * @param lastSelectedHighlightUid - UID of selected highlight
  * @param item - Highlight data from import
  */
-function addNotesToSpan(span: HTMLElement, item: ImportExportData): void {
+function addNotesToSpan(
+    span: HTMLElement,
+    lastSelectedHighlightUid: string,
+    item: ImportExportData,
+    highlightColor: string = colors[3].code,
+    deleteNoteButtonVisible: boolean,
+): void {
+    // Add note mark to highlight
+    if (item.noteMark) {
+        item.noteMark.forEach((noteMark) => {
+            const correctedAnswerUid = genUid();
+            const existingCorrectedAnswers =
+                getCorrectedAnswersFromLocalStorage();
+            const updatedCorrectedAnswers = {
+                ...existingCorrectedAnswers,
+                [correctedAnswerUid]: noteMark,
+            };
+            setCorrectedAnswersToLocalStorage(updatedCorrectedAnswers);
+            const noteMarkBox = createNoteBox(
+                noteMark,
+                onDelete,
+                null,
+                lastSelectedHighlightUid,
+                correctedAnswerUid,
+                deleteNoteButtonVisible,
+            );
+            Object.assign(noteMarkBox.style, {
+                background: highlightColor || colors[3].code,
+                border: "1px solid #90caf9",
+                display: "inline-block",
+                fontSize: "0.95em",
+                color: "#1976d2",
+                userSelect: "none",
+            });
+            // noteMarkBox.textContent = noteMark;
+            dialogManager.addNoteEventListener(noteMarkBox, correctedAnswerUid);
+
+            if (span.parentNode) {
+                span.parentNode.insertBefore(noteMarkBox, span.nextSibling);
+            }
+        });
+    }
+
     // Add notes to highlight
     if (item.note.length > 0) {
         item.note.forEach((note) => {
@@ -374,59 +445,26 @@ function addNotesToSpan(span: HTMLElement, item: ImportExportData): void {
                 [noteUid]: note,
             };
             setNotesToLocalStorage(updatedNotes);
-
-            const noteBox = createNoteBox(note, onDelete, noteUid, null);
-            dialogManager.addNoteEventListener(noteBox, noteUid);
-            span.appendChild(noteBox);
-        });
-    }
-
-    // Add note marks to highlight
-    if (item.noteMark) {
-        item.noteMark.forEach((noteMark) => {
-            const correctedUid = genUid();
-            const existingCorrectedAnswers =
-                getCorrectedAnswersFromLocalStorage();
-            const updatedCorrectedAnswers = {
-                ...existingCorrectedAnswers,
-                [correctedUid]: noteMark,
-            };
-            setCorrectedAnswersToLocalStorage(updatedCorrectedAnswers);
-
-            const noteMarkBox = createNoteBox(
-                noteMark,
+            const noteBox = createNoteBox(
+                note,
                 onDelete,
+                noteUid,
+                lastSelectedHighlightUid,
                 null,
-                correctedUid,
+                deleteNoteButtonVisible,
             );
-            Object.assign(noteMarkBox.style, {
-                background: "#e3f2fd",
-                border: "1px solid #90caf9",
-                marginLeft: "8px",
-                display: "inline-block",
-                fontSize: "0.95em",
-                color: "#1976d2",
-                userSelect: "none",
-            });
-            noteMarkBox.textContent = noteMark;
-            span.appendChild(noteMarkBox);
+            noteBox.style.background = highlightColor || colors[3].code;
+            noteBox.style.fontWeight = "bold";
+            noteBox.style.cursor = "pointer";
+            dialogManager.addNoteEventListener(noteBox, noteUid);
+            if (span.parentNode) {
+                span.parentNode.insertBefore(noteBox, span.nextSibling);
+            }
         });
     }
 }
 
-/**
- * Export and collect information of all existing highlights on the page into storable data
- * @returns Array containing detailed information of all highlights on the page
- * @returns Array[].xpath - XPath to element containing highlight
- * @returns Array[].offsetStart - Character start position of highlight in parent text (from beginning of text)
- * @returns Array[].offsetEnd - Character end position of highlight in parent text
- * @returns Array[].offsetCount - Number of words highlighted (separated by spaces)
- * @returns Array[].note - Array of regular text notes associated with highlight
- * @returns Array[].noteMark - Array of scoring/evaluation notes associated with highlight
- * @returns Array[].parentText - Full text of parent element (for validation during import)
- * @returns Array[].highlightText - Exact text that was highlighted (for positioning during import)
- */
-export function exportHighlightsData() {
+export function exportHighlightsData(): ExportHighlightResult[] {
     // Collect all highlight elements and data from localStorage
     const highlights =
         document.querySelectorAll<HTMLElement>(".highlighted-text");
@@ -435,23 +473,12 @@ export function exportHighlightsData() {
         localStorage.getItem("correctedAnswersUid") || "{}",
     );
 
-    const result: Array<{
-        xpath: string;
-        offsetStart: number;
-        offsetEnd: number;
-        offsetCount: number;
-        noteColor?: string;
-        underline?: boolean;
-        strikethrough?: boolean;
-        note: string[];
-        noteMark: string[];
-        parentText?: string;
-        highlightText?: string;
-    }> = [];
+    const result: ExportHighlightResult[] = [];
 
     highlights.forEach((el) => {
         // Get xpath of highlight element
         const xpath = getXpathFromElement(el, "highlighted-area");
+        const highlightUid = el.getAttribute("data-uid");
         const parent = el.parentNode;
         let parentText = "";
         if (parent && parent.nodeType === Node.ELEMENT_NODE) {
@@ -472,7 +499,7 @@ export function exportHighlightsData() {
 
         if (!highlightText.trim()) return;
 
-        // Calculate offset position of highlight in parent text
+        // Calculate offset position of highlight within parent text
         let offsetStart = -1;
         let offsetEnd = -1;
         if (parentText && highlightText) {
@@ -483,32 +510,30 @@ export function exportHighlightsData() {
         const offsetCount = highlightText.trim().split(/\s+/).length;
 
         const note: string[] = [];
-        const noteSpan = el.querySelectorAll(
-            ".highlight-note[note-uid]",
-        ) as NodeListOf<HTMLSpanElement>;
-        if (noteSpan) {
-            noteSpan.forEach((span) => {
+        const noteMark: string[] = [];
+        const noteAndCorrectedSpans = document.querySelectorAll(
+            ".highlight-note[data-uid='" + highlightUid + "']",
+        );
+        console.log("noteAndCorrectedSpans:", noteAndCorrectedSpans);
+        if (noteAndCorrectedSpans) {
+            noteAndCorrectedSpans.forEach((span) => {
                 const noteUid = span.getAttribute("note-uid");
+                const correctedAnswerUid = span.getAttribute(
+                    "corrected-answer-uid",
+                );
                 if (noteUid && notes[noteUid]) {
                     note.push(notes[noteUid]);
                 }
-            });
-        }
-
-        const noteMark: string[] = [];
-        const correctedSpan = el.querySelectorAll(
-            ".highlight-note[corrected-answer-uid]",
-        ) as NodeListOf<HTMLSpanElement>;
-        if (correctedSpan) {
-            correctedSpan.forEach((span) => {
-                const correctedUid = span.getAttribute("corrected-answer-uid");
-                if (correctedUid && correctedAnswers[correctedUid]) {
-                    noteMark.push(correctedAnswers[correctedUid]);
+                if (
+                    correctedAnswerUid &&
+                    correctedAnswers[correctedAnswerUid]
+                ) {
+                    noteMark.push(correctedAnswers[correctedAnswerUid]);
                 }
             });
         }
 
-        const noteColor = el.style.backgroundColor || colors[0].code;
+        const highlightColor = el.style.backgroundColor || colors[0].code;
         const computedStyle = window.getComputedStyle(el);
         const underline =
             el.style.borderBottom !== "" && el.style.borderBottom !== "none";
@@ -523,7 +548,7 @@ export function exportHighlightsData() {
             underline,
             strikethrough,
             note,
-            noteColor,
+            highlightColor,
             noteMark,
             parentText,
             highlightText,

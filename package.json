@@ -5,34 +5,42 @@
     "main": "dist/annotator.cjs.js",
     "module": "dist/annotator.es.js",
     "types": "dist/types/index.d.ts",
+    "style": "dist/annotator.css",
     "type": "module",
     "scripts": {
         "dev": "vite --host",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "docs:serve": "cd docs && python -m http.server 8080"
     },
     "dependencies": {
         "@dnd-kit/core": "^6.3.1",
         "@emotion/css": "^11.13.5",
+        "draft-js": "^0.11.7",
         "lucide-react": "^0.511.0",
+        "next-themes": "^0.4.6",
+        "path": "^0.12.7",
+        "rangy": "^1.3.2",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "react-router-dom": "^7.6.1"
+        "react-router-dom": "^7.6.1",
+        "vite-plugin-css-injected-by-js": "^3.5.2"
     },
     "devDependencies": {
         "@eslint/js": "^9.21.0",
+        "@types/node": "^24.0.3",
         "@types/react": "18.2.37",
         "@types/react-dom": "18.2.17",
         "@vitejs/plugin-react-swc": "^3.5.0",
-        "esbuild": "^0.25.0",
         "eslint": "^9.21.0",
         "eslint-plugin-react-hooks": "^5.1.0",
         "eslint-plugin-react-refresh": "^0.4.19",
         "globals": "^15.15.0",
+        "tw-animate-css": "^1.3.4",
         "typescript": "~5.7.2",
         "typescript-eslint": "^8.24.1",
-        "vite": "^5.4.19",
+        "vite": "5.2.0",
         "vite-plugin-dts": "^4.5.4"
     }
 }

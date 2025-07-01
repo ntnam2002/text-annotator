@@ -1,7 +1,7 @@
 // Generate UID
 export const genUid = () => crypto.randomUUID();
 
-// Functions to store and retrieve data from localStorage
+// Functions to save and get data from localStorage
 export const getNotesFromLocalStorage = () =>
     JSON.parse(localStorage.getItem("noteUid") || "{}") as Record<
         string,
@@ -21,30 +21,30 @@ export const setCorrectedAnswersToLocalStorage = (
 ) => localStorage.setItem("correctedAnswersUid", JSON.stringify(obj));
 
 /** Get xpath of a node
- * @param element - Node to get xpath from
- * @param rootContainerId - ID of container div as root (optional)
- * @return - Xpath of node as string
- * @description This function will return the xpath of a node, which can start from a specific container div with an id.
+ * @param element - Node to get xpath for
+ * @param rootContainerId - ID of the container div as root (optional)
+ * @return - Xpath of the node as string
+ * @description This function returns the xpath of a node, which can start from a specific container div with id.
  */
 export function getXpathFromElement(
     element: Element,
     rootContainerId?: string,
 ): string {
-    // If there is rootContainerId, find container div and use as root
+    // If rootContainerId exists, find the container div and use it as root
     if (rootContainerId) {
         const rootContainer = document.getElementById(rootContainerId);
         if (rootContainer && rootContainer.contains(element)) {
-            // If element is the root container itself
+            // If the element is the root container itself
             if (element === rootContainer) {
                 return `//DIV[@id='${rootContainerId}']`;
             }
 
-            // If element is a child of root container
+            // If the element is a child of the root container
             return getXpathFromElementRelativeToRoot(element, rootContainer);
         }
     }
 
-    // Fallback to old method if no rootContainerId or container not found
+    // Fallback case if no rootContainerId or container not found
     if (element.tagName === "HTML") return "/HTML[1]";
     if (element === document.body) return "/HTML[1]/BODY[1]";
 
@@ -76,7 +76,7 @@ export function getXpathFromElement(
 }
 
 /** Get xpath of element relative to root container
- * @param element - Element to get xpath from
+ * @param element - Element to get xpath for
  * @param rootContainer - Container div as root
  * @return - Relative xpath from root container
  */
@@ -117,9 +117,9 @@ function getXpathFromElementRelativeToRoot(
 }
 
 /** Get node from xpath
- * @param xpath - Xpath of node to get
- * @param root - Root node to start search from (default is document)
- * @param rootContainerId - ID of container div as root (optional)
+ * @param xpath - Xpath of the node to get
+ * @param root - Root node to start searching from (default is document)
+ * @param rootContainerId - ID of the container div as root (optional)
  * @return - Found node or null if not found
  */
 export function getElementByXPath(
@@ -128,7 +128,7 @@ export function getElementByXPath(
     rootContainerId?: string,
 ): Node | null {
     try {
-        // If there is rootContainerId and xpath starts with that container div
+        // If rootContainerId exists and xpath starts with that container div
         if (rootContainerId && xpath.includes(`[@id='${rootContainerId}']`)) {
             const rootContainer = document.getElementById(rootContainerId);
             if (rootContainer) {
@@ -153,7 +153,7 @@ export function getElementByXPath(
             }
         }
 
-        // Fallback to old method
+        // Fallback case
         const result = document.evaluate(
             xpath,
             root,
@@ -169,11 +169,11 @@ export function getElementByXPath(
 /**
  * Helper function to expand range to word boundaries
  * @param range - Range to expand
- * @description This function will expand the selected range to word boundaries, including special characters and Vietnamese language support.
+ * @description This function will expand the selected range to word boundaries, including special characters and supporting Vietnamese language.
  */
 export function expandRangeToWordBoundaries(range: Range) {
     function isWordChar(char: string) {
-        return /[\wÀ-ỹ]/.test(char); // Check if character is letter, number or Vietnamese character
+        return /[\wÀ-ỹ]/.test(char); // Check if character is a letter, number, or Vietnamese character
     }
     // Expand start
     if (range.startContainer.nodeType === Node.TEXT_NODE) {

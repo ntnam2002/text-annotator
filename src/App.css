@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.highlight-note {
+    font-size: 16px;
+    padding: 2px 4px;
+    cursor: default;
+    user-select: none;
+    height: 100%;
+    min-height: 100%;
+    border-radius: 4px;
+    text-decoration: none !important;
+    margin-left: 4px;
+}
+
+.highlighted-text {
+    padding: 2px 4px;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+    display: inline;
+}
+
+.highlighted-text[style*="border-bottom"] {
+    line-height: 1.2;
+}
+
+.delete-icon {
+    margin-left: 4px;
+    cursor: pointer;
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+    user-select: none;
+}
+
+.delete-icon:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
